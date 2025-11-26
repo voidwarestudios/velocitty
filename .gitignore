@@ -1,0 +1,219 @@
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio files
+.vs/
+*.sdf
+*.opensdf
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.VC.opendb
+*.vcxproj.filters
+
+# Visual Studio cache/options directory
+.vs/
+ipch/
+*.aps
+*.ncb
+*.opendb
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+
+# MSBuild output
+*.log
+msbuild*.binlog
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# Visual Studio Trace Files
+*.e2e
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# Visual Studio code coverage results
+*.coverage
+*.coveragexml
+
+# NCrunch
+_NCrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+
+# Installshield output
+[Ee]xpress/
+
+# DocProject
+DocProject/buildhelp/
+DocProject/Help/*.HxT
+DocProject/Help/*.HxC
+DocProject/Help/*.hhc
+DocProject/Help/*.hhk
+DocProject/Help/*.hhp
+DocProject/Help/Html2
+DocProject/Help/html
+
+# Click-Once
+publish/
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+.nuget/
+nuget.exe
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# JetBrains Rider
+*.sln.iml
+.idea/
+
+# CodeRush
+.cr/
+
+# Compiled Object files
+*.obj
+*.o
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.dll
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lib
+*.a
+*.la
+*.lai
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Dependency directories
+packages/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows shortcuts
+*.lnk
+
+# Temporary files
+*~
+*.tmp
+*.temp
+*.swp
+*.swo
+*~.nib
+
+# Backup files
+*.bak
+*.backup
+
+# Shader compiled objects
+*.cso
+*.fxo
+
+# DirectX shader cache
+*.hlsl.h
+*.hlsl.hpp
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# BenchmarkDotNet Artifacts
+BenchmarkDotNet.Artifacts/
+
+# Project-specific
+config.json
+*.local.json
+
+# IDE specific
+.vscode/
+*.code-workspace
+
+# CMake (if ever added)
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Conan
+conan.lock
+conanbuildinfo.*
+conaninfo.txt
+graph_info.json
+
+# vcpkg
+vcpkg_installed/
+
+# Generated files
+*.generated.*
+*.g.cpp
+*.g.h
+
+# Core dumps
+core
+core.*
+
+# Crash reports
+*.dmp
+*.mdmp
+
+# Local environment
+.env
+.env.local
+*.local
+
+# Credentials and secrets
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.*
+secrets.*

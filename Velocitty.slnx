@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Velocitty.vcxproj" Id="b9957c32-0a95-430f-88fa-8491b7ae2644" />
+</Solution>
