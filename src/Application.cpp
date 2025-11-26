@@ -749,7 +749,7 @@ void Application::onKeyDown(UINT vk) {
         return;
     }
     if (ctrl && vk == 'W') {
-        if (alt) {
+        if (shift) {
             closePane();
         } else {
             closeTab();
@@ -766,10 +766,12 @@ void Application::onKeyDown(UINT vk) {
     }
     if (ctrl && alt && vk == 'D') {
         splitHorizontal();
+        suppressNextChar_ = true;
         return;
     }
     if (ctrl && shift && vk == 'D') {
         splitVertical();
+        suppressNextChar_ = true;
         return;
     }
     if (ctrl && vk == VK_OEM_PLUS) {
@@ -973,8 +975,12 @@ void Application::render() {
     }
 
     for (const auto& pane : activeTab->getPanes()) {
+        const PaneRect& rect = pane->getRect();
+        float paneXOffset = rect.x;
+        float paneYOffset = yOffset + rect.y;
+
         const Selection* sel = (pane.get() == activePane) ? currentSelection_ : nullptr;
-        renderer_.renderBuffer(pane->getTerminal().getBuffer(), yOffset, sel);
+        renderer_.renderBuffer(pane->getTerminal().getBuffer(), paneXOffset, paneYOffset, sel);
         if (pane.get() == activePane) {
             const auto& buffer = pane->getTerminal().getBuffer();
             float cursorOpacity = 0.0f;
@@ -999,7 +1005,8 @@ void Application::render() {
             renderer_.drawCursor(
                 buffer.getCursorCol(),
                 buffer.getCursorRow(),
-                yOffset,
+                paneXOffset,
+                paneYOffset,
                 cursorOpacity
             );
 
@@ -1018,8 +1025,21 @@ void Application::render() {
                 }
 
                 if (scrollbarOpacity > 0.0f) {
-                    renderer_.renderScrollbar(buffer, yOffset, scrollbarOpacity);
+                    renderer_.renderScrollbar(buffer, paneXOffset, paneYOffset, scrollbarOpacity);
                 }
+            }
+        }
+    }
+
+    if (activeTab->getPanes().size() > 1) {
+        uint32_t dividerColor = 0xFF3C3C3C;
+        for (const auto& pane : activeTab->getPanes()) {
+            const PaneRect& rect = pane->getRect();
+            if (rect.x > 0) {
+                renderer_.renderPaneDivider(rect.x, yOffset, rect.height, true, dividerColor);
+            }
+            if (rect.y > 0) {
+                renderer_.renderPaneDivider(rect.x, yOffset + rect.y, rect.width, false, dividerColor);
             }
         }
     }
@@ -1330,9 +1350,6 @@ void Application::splitVertical() {
     PaneContainer* activeTab = tabManager_.getActiveTab();
     if (!activeTab) return;
 
-    Pane* pane = activeTab->getActivePane();
-    if (!pane) return;
-
     float titlebarHeight = Config::instance().getTitlebar().customTitlebar
         ? titlebar_.getHeight() + 1.0f
         : 0.0f;
@@ -1340,7 +1357,7 @@ void Application::splitVertical() {
     const auto& termConfig = Config::instance().getTerminal();
     const wchar_t* shell = termConfig.shell.empty() ? nullptr : termConfig.shell.c_str();
 
-    Pane* newPane = activeTab->split(pane, SplitDirection::Vertical, shell);
+    Pane* newPane = activeTab->smartSplit(shell);
     if (newPane) {
         setupPaneImageCallback(newPane);
         activeTab->updateLayout(

@@ -34,11 +34,12 @@ public:
     void shutdown();
 
     void beginFrame();
-    void renderBuffer(const ScreenBuffer& buffer, float yOffset = 0.0f, const Selection* selection = nullptr);
+    void renderBuffer(const ScreenBuffer& buffer, float xOffset, float yOffset, const Selection* selection = nullptr);
     void renderTitlebar(const Titlebar& titlebar);
     void renderBorder(uint32_t color);
-    void renderScrollbar(const ScreenBuffer& buffer, float yOffset, float opacity = 1.0f);
-    void drawCursor(uint16_t col, uint16_t row, float yOffset = 0.0f, float opacity = 1.0f);
+    void renderScrollbar(const ScreenBuffer& buffer, float xOffset, float yOffset, float opacity = 1.0f);
+    void drawCursor(uint16_t col, uint16_t row, float xOffset, float yOffset, float opacity = 1.0f);
+    void renderPaneDivider(float x, float y, float length, bool vertical, uint32_t color);
     void renderFileSearchOverlay(const FileSearchOverlay& overlay);
     void endFrame();
     void present(bool vsync = true);

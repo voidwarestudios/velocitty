@@ -683,7 +683,30 @@ void DxRenderer::renderBorder(uint32_t color) {
     addQuad(w - 1, 0, 1, h);     // right
 }
 
-void DxRenderer::renderBuffer(const ScreenBuffer& buffer, float yOffset, const Selection* selection) {
+void DxRenderer::renderPaneDivider(float x, float y, float length, bool vertical, uint32_t color) {
+    float r = ((color >> 16) & 0xFF) / 255.0f;
+    float g = ((color >> 8) & 0xFF) / 255.0f;
+    float b = (color & 0xFF) / 255.0f;
+    float a = ((color >> 24) & 0xFF) / 255.0f;
+
+    const GlyphInfo& glyph = getSpaceGlyph();
+
+    float w = vertical ? 1.0f : length;
+    float h = vertical ? length : 1.0f;
+
+    Vertex v0 = {x, y, glyph.u0, glyph.v0, r, g, b, a, r, g, b, a};
+    Vertex v1 = {x + w, y, glyph.u0, glyph.v0, r, g, b, a, r, g, b, a};
+    Vertex v2 = {x, y + h, glyph.u0, glyph.v0, r, g, b, a, r, g, b, a};
+    Vertex v3 = {x + w, y + h, glyph.u0, glyph.v0, r, g, b, a, r, g, b, a};
+    overlayVertices_.push_back(v0);
+    overlayVertices_.push_back(v1);
+    overlayVertices_.push_back(v2);
+    overlayVertices_.push_back(v2);
+    overlayVertices_.push_back(v1);
+    overlayVertices_.push_back(v3);
+}
+
+void DxRenderer::renderBuffer(const ScreenBuffer& buffer, float xOffset, float yOffset, const Selection* selection) {
     float cellW = glyphAtlas_.getCellWidth();
     float cellH = glyphAtlas_.getCellHeight();
 
@@ -714,7 +737,7 @@ void DxRenderer::renderBuffer(const ScreenBuffer& buffer, float yOffset, const S
                                   !isSelected;
             if (isEmptyDefault) continue;
 
-            float x = col * cellW + leftPadding_;
+            float x = col * cellW + xOffset + leftPadding_;
 
             uint32_t fg = cell.attrs.foreground;
             uint32_t bg = cell.attrs.background;
@@ -804,13 +827,13 @@ void DxRenderer::renderBuffer(const ScreenBuffer& buffer, float yOffset, const S
     }
 }
 
-void DxRenderer::drawCursor(uint16_t col, uint16_t row, float yOffset, float opacity) {
+void DxRenderer::drawCursor(uint16_t col, uint16_t row, float xOffset, float yOffset, float opacity) {
     if (opacity <= 0.0f) return;
 
     float cellW = glyphAtlas_.getCellWidth();
     float cellH = glyphAtlas_.getCellHeight();
 
-    float x = col * cellW + leftPadding_;
+    float x = col * cellW + xOffset + leftPadding_;
     float y = row * cellH + cellH - 2.0f + yOffset + topPadding_;
     float w = cellW;
     float h = 2.0f;
@@ -830,7 +853,7 @@ void DxRenderer::drawCursor(uint16_t col, uint16_t row, float yOffset, float opa
     overlayVertices_.push_back(v3);
 }
 
-void DxRenderer::renderScrollbar(const ScreenBuffer& buffer, float yOffset, float opacity) {
+void DxRenderer::renderScrollbar(const ScreenBuffer& buffer, float xOffset, float yOffset, float opacity) {
     if (opacity <= 0.0f) return;
 
     uint32_t scrollbackSize = buffer.getScrollbackSize();
@@ -841,13 +864,15 @@ void DxRenderer::renderScrollbar(const ScreenBuffer& buffer, float yOffset, floa
     uint32_t viewportOffset = buffer.getViewportOffset();
 
     float cellH = glyphAtlas_.getCellHeight();
+    float cellW = glyphAtlas_.getCellWidth();
     float viewportHeight = visibleLines * cellH + bottomPadding_;
+    float paneWidth = buffer.getCols() * cellW + leftPadding_;
 
     float scrollbarWidth = 6.0f;
     float scrollbarPadding = 2.0f;
     float minThumbHeight = 20.0f;
 
-    float trackX = static_cast<float>(width_) - scrollbarWidth - scrollbarPadding;
+    float trackX = xOffset + paneWidth - scrollbarWidth - scrollbarPadding;
     float trackY = yOffset + topPadding_;
     float trackHeight = viewportHeight;
 
