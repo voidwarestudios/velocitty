@@ -72,6 +72,62 @@ void BoxDrawing::drawArc(uint8_t* data, uint32_t width, uint32_t height,
     }
 }
 
+void BoxDrawing::renderRoundedCorner(uint8_t* data, uint32_t width, uint32_t height, char32_t cp) {
+    int midX = width / 2;
+    int midY = height / 2;
+    int lineWidth = std::max(1, (int)(width / 8));
+
+    float rx = (float)midX;
+    float ry = (float)midY;
+
+    float cx, cy;
+    int startAngle, endAngle;
+
+    switch (cp) {
+        case 0x256D:
+            cx = (float)width;
+            cy = (float)height;
+            startAngle = 180;
+            endAngle = 270;
+            break;
+        case 0x256E:
+            cx = 0.0f;
+            cy = (float)height;
+            startAngle = 270;
+            endAngle = 360;
+            break;
+        case 0x256F:
+            cx = 0.0f;
+            cy = 0.0f;
+            startAngle = 0;
+            endAngle = 90;
+            break;
+        case 0x2570:
+            cx = (float)width;
+            cy = 0.0f;
+            startAngle = 90;
+            endAngle = 180;
+            break;
+        default:
+            return;
+    }
+
+    for (int t = -lineWidth / 2; t <= lineWidth / 2; ++t) {
+        float radiusX = rx + t;
+        float radiusY = ry + t;
+        if (radiusX <= 0 || radiusY <= 0) continue;
+
+        for (int angle = startAngle; angle <= endAngle; ++angle) {
+            float rad = angle * 3.14159f / 180.0f;
+            int x = (int)(cx + radiusX * std::cos(rad));
+            int y = (int)(cy + radiusY * std::sin(rad));
+            if (x >= 0 && x < (int)width && y >= 0 && y < (int)height) {
+                data[y * width + x] = 255;
+            }
+        }
+    }
+}
+
 void BoxDrawing::renderBoxDrawing(uint8_t* data, uint32_t width, uint32_t height, char32_t cp) {
     int midX = width / 2;
     int midY = height / 2;
@@ -131,6 +187,15 @@ void BoxDrawing::renderBoxDrawing(uint8_t* data, uint32_t width, uint32_t height
         case 0x257D: up = down = downHeavy = true; break;
         case 0x257E: left = right = leftHeavy = true; break;
         case 0x257F: up = down = upHeavy = true; break;
+
+        // rounded corners - render with arcs and return early
+        case 0x256D: // ╭ top-left rounded
+        case 0x256E: // ╮ top-right rounded
+        case 0x256F: // ╯ bottom-right rounded
+        case 0x2570: // ╰ bottom-left rounded
+            renderRoundedCorner(data, width, height, cp);
+            return;
+
         default:
             left = right = true;
             break;

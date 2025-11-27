@@ -23,4 +23,5 @@ private:
     static void renderBlockElement(uint8_t* data, uint32_t width, uint32_t height, char32_t cp);
     static void renderPowerline(uint8_t* data, uint32_t width, uint32_t height, char32_t cp);
     static void renderBraille(uint8_t* data, uint32_t width, uint32_t height, char32_t cp);
+    static void renderRoundedCorner(uint8_t* data, uint32_t width, uint32_t height, char32_t cp);
 };
